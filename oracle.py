@@ -12,7 +12,7 @@ class Oracle:
                 params.append(random.random()*np.pi)
 
         if len(params) != n:
-            raise ValueError(f"The length of param is {len(param)}, it should be {n}")
+            raise ValueError(f"The length of param is {len(params)}, it should be {n}")
 
         self.dim = n
         self.params = params
