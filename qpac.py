@@ -32,7 +32,6 @@ def qpac_learn(epsilon, delta, oracle, tnn, simulator, cut=100, step = 1):
     n_update = 0
     m = 0
     errors = []
-    previous = []
 
     while m < m_max or s > N/2:
         i += 1
@@ -79,9 +78,10 @@ def qpac_learn(epsilon, delta, oracle, tnn, simulator, cut=100, step = 1):
                     errors.append(rev)
 
         if s > N/2:
-            to_update = util.get_updates(tnn, errors, previous)
-            previous = to_update
+            to_update = util.get_updates(tnn, errors)
             tnn.update_tnn(to_update)
+            active = [k for k,v in tnn.gates.items() if v==1]
+            print(f"gates: {active}")
             n_update += 1
             i = -1
             errors = []
