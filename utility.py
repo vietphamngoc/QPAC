@@ -19,7 +19,7 @@ def str_to_ones(string: str)->set:
     return(set(ones))
 
 
-def get_updates(tnn, errors: list, previous: list)->list:
+def get_updates(tnn, errors: list)->list:
     n = tnn.dim
     ones = str_to_ones(errors[0])
     to_update = [ones]
@@ -38,19 +38,19 @@ def get_updates(tnn, errors: list, previous: list)->list:
         if all_empty == True:
             to_update.append(ones)
 
-    gates = [ones_to_str(k, n) for k in to_update]
-
-    for g in gates:
-        if tnn.gates[g] == 0:
-            ones_g = set([i for i in range(n) if g[i] == "1"])
+    additional_gates = []
+    for g in to_update:
+        if tnn.gates[ones_to_str(g, n)] == 0:
             for a in active:
-                if ones_g.intersection(a) != set() and ones_g.intersection(a) != ones_g:
-                    gates = ["0"*n]
-                    print("prout")
-                    break
-    # if set(gates).intersection(previous) != set():
-    #     gates = ["0"*n]
-    return(gates)
+                if g.intersection(a) != set():
+                    if g.intersection(a) == g:
+                        if a not in additional_gates:
+                            additional_gates.append(a)
+                    else:
+                        return(["0"*n])
+    to_update = to_update + additional_gates
+
+    return([ones_to_str(k, n) for k in to_update])
 
 
 def get_diffusion_operator(oracle, tnn):
