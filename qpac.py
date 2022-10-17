@@ -81,7 +81,6 @@ def qpac_learn(epsilon, delta, oracle, tnn, simulator, cut=100, step = 1):
             to_update = util.get_updates(tnn, errors)
             tnn.update_tnn(to_update)
             active = [k for k,v in tnn.gates.items() if v==1]
-            print(f"gates: {active}")
             n_update += 1
             i = -1
             errors = []
