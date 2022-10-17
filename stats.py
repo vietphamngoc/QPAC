@@ -57,12 +57,16 @@ def get_stats(n, epsilon, delta, runs, number=0, step=2):
                     logic.append("0"*n)
 
                 if key not in errors or key not in ns_update:
+                    print(f"Function: {key}")
                     ora = oracle.Oracle(n, logic, params=params)
                     network = tnn.TNN(n)
 
                     n_update = qpac_learn(epsilon, delta, ora, network, simulator, step=step)
 
                     ns_update[key] = n_update
+
+                    active = [k for k,v in network.gates.items() if v==1]
+                    print(f"Final gates: {active}\n")
 
                     if n_update != -1:
                         err = util.get_error_rate(ora, network, sv_simulator)
