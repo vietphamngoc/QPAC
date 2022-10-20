@@ -4,6 +4,7 @@ from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
 from qiskit.providers.aer import QasmSimulator
 
 import utility as util
+import update_strategy as strat
 
 def qpac_learn(epsilon, delta, oracle, tnn, simulator, cut=100, step = 1):
     if step < 1:
@@ -78,7 +79,7 @@ def qpac_learn(epsilon, delta, oracle, tnn, simulator, cut=100, step = 1):
                     errors.append(rev)
 
         if s > N/2:
-            to_update = util.get_updates(tnn, errors)
+            to_update = strat.get_updates(tnn, errors)
             tnn.update_tnn(to_update)
             active = [k for k,v in tnn.gates.items() if v==1]
             n_update += 1
