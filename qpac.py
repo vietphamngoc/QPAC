@@ -3,14 +3,18 @@ import numpy as np
 from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
 from qiskit.providers.aer import QasmSimulator
 
+from oracle import Oracle
+from tnn import TNN
+
 import utility as util
 import update_strategy as strat
 
-def qpac_learn(epsilon, delta, oracle, tnn, simulator, cut=100, step = 1):
+def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
+                simulator, cut: int=100, step: int= 1):
     if step < 1:
         raise ValueError("step must be greater or equal to 1")
 
-    n = oracle.dim
+    n = ora.dim
 
     N = 2*(np.ceil(1/(np.pi*delta**2))//2)+2
     m_max = int(np.ceil(0.5*((np.pi/(4*np.arcsin(np.sqrt(epsilon/5)))) - 1)))
@@ -39,9 +43,9 @@ def qpac_learn(epsilon, delta, oracle, tnn, simulator, cut=100, step = 1):
         m = schedule[i]
         s = 0
 
-        tnn.generate_network()
+        tun_net.generate_network()
 
-        diffusion = util.get_diffusion_operator(oracle, tnn)
+        diffusion = util.get_diffusion_operator(ora, tun_net)
 
         # Creating the circuit
         qr = QuantumRegister(n, 'x')
@@ -51,8 +55,8 @@ def qpac_learn(epsilon, delta, oracle, tnn, simulator, cut=100, step = 1):
         qc = QuantumCircuit(qr, qar, cr, car)
 
         # Applying the oracle, the network and scaling down
-        qc.append(oracle.gate, range(n+1))
-        qc.append(tnn.network, range(n+1))
+        qc.append(ora.gate, range(n+1))
+        qc.append(tun_net.network, range(n+1))
         qc.cry(2*np.arcsin(1/np.sqrt(5)), qar[0], qar[1])
 
         # Applying amplitude amplification
@@ -79,9 +83,8 @@ def qpac_learn(epsilon, delta, oracle, tnn, simulator, cut=100, step = 1):
                     errors.append(rev)
 
         if s > N/2:
-            to_update = strat.get_updates(tnn, errors)
-            tnn.update_tnn(to_update)
-            active = [k for k,v in tnn.gates.items() if v==1]
+            to_update = strat.get_updates(tun_net, errors)
+            tun_net.update_tnn(to_update)
             n_update += 1
             i = -1
             errors = []

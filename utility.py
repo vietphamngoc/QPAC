@@ -6,6 +6,9 @@ import os
 from qiskit import QuantumCircuit, transpile
 from qiskit.quantum_info.operators import Operator
 
+from oracle import Oracle
+from tnn import TNN
+
 
 def ones_to_str(ones: set, n: int)->str:
     binary = ["0" for i in range(n)]
@@ -19,23 +22,23 @@ def str_to_ones(string: str)->set:
     return(set(ones))
 
 
-def get_diffusion_operator(oracle, tnn):
-    n = tnn.dim
+def get_diffusion_operator(ora: Oracle, tun_net: TNN):
+    n = tun_net.dim
     qc = QuantumCircuit(n+2)
     # Chi_g
     qc.cz(n, n+1)
     # A^-1
     qc.cry(-2*np.arcsin(1/np.sqrt(5)), n, n+1)
-    qc.append(tnn.network, range(n+1))
-    qc.append(oracle.inv_gate, range(n+1))
+    qc.append(tun_net.network, range(n+1))
+    qc.append(ora.inv_gate, range(n+1))
     # -Chi_0
     mat = -np.eye(2**(n+2))
     mat[0,0] = 1
     op = Operator(mat)
     qc.unitary(op, range(n+2), label="Chi_0")
     # A
-    qc.append(oracle.gate, range(n+1))
-    qc.append(tnn.network, range(n+1))
+    qc.append(ora.gate, range(n+1))
+    qc.append(tun_net.network, range(n+1))
     qc.cry(2*np.arcsin(1/np.sqrt(5)), n, n+1)
     return(qc.to_gate(label="Diffusion"))
 
@@ -52,12 +55,12 @@ def get_custom_params(n: int, u: str, angle)->list:
     return(params)
 
 
-def get_error_rate(oracle, tnn, simulator):
-    n = oracle.dim
+def get_error_rate(ora: Oracle, tun_net: TNN, simulator):
+    n = ora.dim
     rate = 0
     qc = QuantumCircuit(n+1)
-    qc.append(oracle.gate, range(n+1))
-    qc.append(tnn.network, range(n+1))
+    qc.append(ora.gate, range(n+1))
+    qc.append(tun_net.network, range(n+1))
 
     compiled_circuit = transpile(qc, simulator)
     job = simulator.run(compiled_circuit)
@@ -69,7 +72,7 @@ def get_error_rate(oracle, tnn, simulator):
     return(rate)
 
 
-def get_parameters(n):
+def get_parameters(n: int):
     directory = f"{os.getcwd()}/parameters"
 
     if not os.path.exists(directory):
@@ -91,7 +94,7 @@ def get_parameters(n):
     return(params)
 
 
-def get_functions(n, number):
+def get_functions(n: int, number: int):
     if number > 2**n:
         raise ValueError(f"number should not be greater than {2**n}")
 

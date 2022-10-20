@@ -1,11 +1,15 @@
-def get_updates(tnn, errors: list)->list:
-    n = tnn.dim
-    ones = str_to_ones(errors[0])
+import utility as util
+
+from tnn import TNN
+
+def get_updates(network: TNN, errors: list)->list:
+    n = network.dim
+    ones = util.str_to_ones(errors[0])
     to_update = [ones]
-    active = [str_to_ones(k) for k,v in tnn.gates.items() if v == 1]
+    active = [util.str_to_ones(k) for k,v in network.gates.items() if v == 1]
 
     for error in errors:
-        ones = str_to_ones(error)
+        ones = util.str_to_ones(error)
         if ones == set():
             return(["0"*n])
         all_empty = True
@@ -19,7 +23,7 @@ def get_updates(tnn, errors: list)->list:
 
     additional_gates = []
     for g in to_update:
-        if tnn.gates[ones_to_str(g, n)] == 0:
+        if network.gates[util.ones_to_str(g, n)] == 0:
             for a in active:
                 if g.intersection(a) != set():
                     if g.intersection(a) == g:
@@ -29,4 +33,4 @@ def get_updates(tnn, errors: list)->list:
                         return(["0"*n])
     to_update = to_update + additional_gates
 
-    return([ones_to_str(k, n) for k in to_update])
+    return([util.ones_to_str(k, n) for k in to_update])

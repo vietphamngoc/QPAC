@@ -5,15 +5,16 @@ import sys
 import os
 import pickle
 
-import oracle
-import tnn
+from oracle import Oracle
+from tnn import TNN
 import utility as util
 from qpac import qpac_learn
 
 from qiskit.providers.aer import QasmSimulator, StatevectorSimulator
 
 
-def get_stats(n, epsilon, delta, runs, number=0, step=2):
+def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
+                step: int=2):
     print("Start")
 
     params = util.get_parameters(n)
@@ -58,18 +59,19 @@ def get_stats(n, epsilon, delta, runs, number=0, step=2):
 
                 if key not in errors or key not in ns_update:
                     print(f"Function: {key}")
-                    ora = oracle.Oracle(n, logic, params=params)
-                    network = tnn.TNN(n)
+                    ora = Oracle(n, logic, params=params)
+                    tun_net = TNN(n)
 
-                    n_update = qpac_learn(epsilon, delta, ora, network, simulator, step=step)
+                    n_update = qpac_learn(  epsilon, delta, ora, tun_net,
+                                            simulator, step=step)
 
                     ns_update[key] = n_update
 
-                    active = [k for k,v in network.gates.items() if v==1]
+                    active = [k for k,v in tun_net.gates.items() if v==1]
                     print(f"Final gates: {active}\n")
 
                     if n_update != -1:
-                        err = util.get_error_rate(ora, network, sv_simulator)
+                        err = util.get_error_rate(ora, tun_net, sv_simulator)
                         errors[key] = err
                     else:
                         print(key)
