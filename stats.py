@@ -58,7 +58,7 @@ def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
                     logic.append("0"*n)
 
                 if key not in errors or key not in ns_update:
-                    print(f"Function: {key}")
+                    # print(f"Function: {key}")
                     ora = Oracle(n, logic, params=params)
                     tun_net = TNN(n)
 
@@ -67,8 +67,8 @@ def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
 
                     ns_update[key] = n_update
 
-                    active = [k for k,v in tun_net.gates.items() if v==1]
-                    print(f"Final gates: {active}\n")
+                    # active = [k for k,v in tun_net.gates.items() if v==1]
+                    # print(f"Final gates: {active}\n")
 
                     if n_update != -1:
                         err = util.get_error_rate(ora, tun_net, sv_simulator)
