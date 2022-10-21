@@ -33,7 +33,6 @@ def plot_run(n, epsilon, delta, run_id=1):
             upd_labels.append(key)
 
     plt.rc("font", size=15)
-    colors = ["r", "lime", "m"]
 
     error_fig = plt.figure(layout="tight")
     x, y = zip(*errors.items())
@@ -41,7 +40,7 @@ def plot_run(n, epsilon, delta, run_id=1):
     plt.scatter(x, y, marker="+")
     c = 0
     for f in err_labels:
-        plt.scatter(f, errors[f], marker="+", label=f, c=colors[c])
+        plt.scatter(f, errors[f], marker="+", label=f)
         c += 1
     plt.xlabel("function")
     # plt.ylabel("error rate")
@@ -56,7 +55,7 @@ def plot_run(n, epsilon, delta, run_id=1):
     plt.scatter(x, y, marker="+")
     c = 0
     for f in upd_labels:
-        plt.scatter(f, -1, marker="+", label=f, c=colors[c])
+        plt.scatter(f, -1, marker="+", label=f)
         c += 1
     # plt.xlabel("function")
     # plt.ylabel("N")
