@@ -9,8 +9,24 @@ from tnn import TNN
 import utility as util
 import update_strategy as strat
 
+simulator = QasmSimulator()
+
 def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
-                simulator, cut: int=100, step: int= 1):
+                cut: int=100, step: int= 1):
+    """
+    Function performing the learning in the QPAC framework.
+
+    Arguments:
+        - epsilon: float, the error threshold
+        - delta: float, the probability threshold
+        - ora: Oracle, the query oracle for the target concept
+        - tun_net: TNN, the network to be tuned
+        - cut: int (default=100), the cut off threshold
+        - step: int (default=1), the increment step size
+
+    Returns:
+        - The number of updates needed to reach the QPAC target
+    """
     if step < 1:
         raise ValueError("step must be greater or equal to 1")
 

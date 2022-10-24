@@ -6,7 +6,23 @@ from qiskit import QuantumCircuit
 class Oracle:
 
     def __init__(self, n: int, logic: list, params: list=[]):
+        """
+        Instanciates an object of the Oracle class which is the query oracle
+        for the target function.
 
+        Arguments:
+            - n: int, the dimension of the input space
+            - logic: list, the list of the controlled X gates corresponding to the target function
+            - params: list (default=[]), the list of the angles applied to the roation gates to create the distribution. If empty will create a random one
+
+        Returns:
+            - An object of the class Oracle with attributes:
+                * dim: the dimension of the input space
+                * params: the list of the angles applied to the roation gates to create the distribution
+                * logic: list the list of the controlled X gates corresponding to the target function
+                * gate: the quantum gate corresponding to the oracle
+                * inv_gate: the inverse of gate
+        """
         if params == []:
             for i in range(n):
                 params.append(random.random()*np.pi)
@@ -19,23 +35,23 @@ class Oracle:
         self.logic = logic
 
         qc = QuantumCircuit(n+1)
-        self.apply_amplitude(qc, inverse=False)
-        self.apply_function(qc)
+        self.__apply_amplitude(qc, inverse=False)
+        self.__apply_function(qc)
 
         qc_inv = QuantumCircuit(n+1)
-        self.apply_function(qc_inv)
-        self.apply_amplitude(qc_inv, inverse=True)
+        self.__apply_function(qc_inv)
+        self.__apply_amplitude(qc_inv, inverse=True)
 
         self.gate = qc.to_gate(label="Oracle")
         self.inv_gate = qc_inv.to_gate(label="Oracle^-1")
 
 
-    def apply_amplitude(self, qc, inverse):
+    def __apply_amplitude(self, qc, inverse):
         for i in range(self.dim):
             qc.ry((-1)**(inverse)*self.params[i],i)
 
 
-    def apply_function(self, qc):
+    def __apply_function(self, qc):
         for u in self.logic:
             if len(u) != self.dim:
                 raise ValueError(f"The length of {u} should be {self.dim}")

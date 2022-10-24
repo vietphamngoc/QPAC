@@ -5,12 +5,23 @@ import os
 
 from qiskit import QuantumCircuit, transpile
 from qiskit.quantum_info.operators import Operator
+from qiskit.providers.aer import StatevectorSimulator
 
 from oracle import Oracle
 from tnn import TNN
 
 
 def ones_to_str(ones: set, n: int)->str:
+    """
+    Function to transform the set of positions of '1's into the corresponding binary string.
+
+    Arguments:
+        - ones: set, the set of positions
+        - n: int, the length of the resulting binary string
+
+    Returns:
+        The binary string of length n where the '1's are at the positions collected in ones
+    """
     binary = ["0" for i in range(n)]
     for i in ones:
         binary[i] = "1"
@@ -18,11 +29,30 @@ def ones_to_str(ones: set, n: int)->str:
 
 
 def str_to_ones(string: str)->set:
+    """
+    Function to transform a binary string into a set collecting the positions of the '1's.
+
+    Arguments:
+        - string: str, the binary string
+
+    Returns:
+        The set collecting the positions of the '1's in string
+    """
     ones = [i for i in range(len(string)) if string[i] == "1"]
     return(set(ones))
 
 
 def get_diffusion_operator(ora: Oracle, tun_net: TNN):
+    """
+    Function to generate the diffusion operator corresponding to the query oracle and the tunable network in its current state.
+
+    Arguments:
+        - ora: Oracle, the query oracle
+        - tun_net: TNN, the tunable neural network
+
+    Returns:
+        The quantum gate representing the diffusion operator
+    """
     n = tun_net.dim
     qc = QuantumCircuit(n+2)
     # Chi_g
@@ -43,7 +73,18 @@ def get_diffusion_operator(ora: Oracle, tun_net: TNN):
     return(qc.to_gate(label="Diffusion"))
 
 
-def get_custom_params(n: int, u: str, angle)->list:
+def get_custom_params(n: int, u: str, angle: float)->list:
+    """
+    Function to generate custom parameters for the oracle.
+
+    Arguments:
+        - n: int, the dimension of the input space
+        - u: str, the string controlling the placement of the specified angle
+        - angle: float, the custom angle
+
+    Returns:
+        - A list containing angles to build the amplitudes in the oracle
+    """
     if len(u) != n:
         raise ValueError(f"Length of u is not {n}")
     params = []
@@ -55,15 +96,26 @@ def get_custom_params(n: int, u: str, angle)->list:
     return(params)
 
 
-def get_error_rate(ora: Oracle, tun_net: TNN, simulator):
+def get_error_rate(ora: Oracle, tun_net: TNN):
+    """
+    Function to compute the true error rate of a tunable network using the statevector simulator.
+
+    Arguments:
+        - ora: Oracle, the query oracle corresponding to the target concept
+        - tun_net: TNN, the tunable network for which the error rate is to be computed
+
+    Returns:
+        - The error rate
+    """
+    sv_simulator = StatevectorSimulator()
     n = ora.dim
     rate = 0
     qc = QuantumCircuit(n+1)
     qc.append(ora.gate, range(n+1))
     qc.append(tun_net.network, range(n+1))
 
-    compiled_circuit = transpile(qc, simulator)
-    job = simulator.run(compiled_circuit)
+    compiled_circuit = transpile(qc, sv_simulator)
+    job = sv_simulator.run(compiled_circuit)
     result = job.result()
     counts = result.get_counts(compiled_circuit)
     for s in counts:
@@ -73,6 +125,15 @@ def get_error_rate(ora: Oracle, tun_net: TNN, simulator):
 
 
 def get_parameters(n: int):
+    """
+    Function to save parameters in a file, if this file exists, retrieve the saved parameters.
+
+    Arguments:
+        - n: int, the dimension of the input space
+
+    Returns:
+        - A list containing angles to build the amplitudes in the oracle
+    """
     directory = f"{os.getcwd()}/parameters"
 
     if not os.path.exists(directory):
@@ -94,7 +155,17 @@ def get_parameters(n: int):
     return(params)
 
 
-def get_functions(n: int, number: int):
+def get_functions(n: int, number: int=0):
+    """
+    Function to save a set of target concepts in a file, if this file exists, retrieve the functions.
+
+    Arguments:
+        - n: int, the dimension of the input space
+        - number: int (default=0), the number of functions in the set. If 0, then it is the whole class of concepts
+
+    Returns:
+        - A list containing the functions
+    """
     if number > 2**n:
         raise ValueError(f"number should not be greater than {2**n}")
 
