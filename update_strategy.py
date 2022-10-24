@@ -3,6 +3,16 @@ import utility as util
 from tnn import TNN
 
 def get_updates(network: TNN, errors: list)->list:
+    """
+    Function implementing the update strategy to learn the target concept.
+
+    Arguments:
+        - network: TNN, the network being tuned to learn the target concept
+        - errors: list, the list of inputs measured as erroneous
+
+    Returns:
+        A list of gates to be switched
+    """
     n = network.dim
     ones = util.str_to_ones(errors[0])
     to_update = [ones]
