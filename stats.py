@@ -63,7 +63,7 @@ def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
                     tun_net = TNN(n)
 
                     n_update = qpac_learn(  epsilon, delta, ora, tun_net,
-                                            simulator, step=step)
+                                            step=step)
 
                     ns_update[key] = n_update
 
@@ -71,7 +71,7 @@ def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
                     # print(f"Final gates: {active}\n")
 
                     if n_update != -1:
-                        err = util.get_error_rate(ora, tun_net, sv_simulator)
+                        err = util.get_error_rate(ora, tun_net)
                         errors[key] = err
                     else:
                         print(key)
@@ -95,8 +95,5 @@ if __name__ == '__main__':
     else:
         raise ValueError("Invalid number of arguments")
 
-
-    simulator = QasmSimulator()
-    sv_simulator = StatevectorSimulator()
 
     get_stats(n, epsilon, delta, run, number=number, step=2)
