@@ -18,6 +18,9 @@ def get_updates(network: TNN, errors: list)->list:
     to_update = [ones]
     active = [util.str_to_ones(k) for k,v in network.gates.items() if v == 1]
 
+    if len(active) > 1 and ["0"*n] not in active:
+        return(["0"*n])
+
     for error in errors:
         ones = util.str_to_ones(error)
         if ones == set():
