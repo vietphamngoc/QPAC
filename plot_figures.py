@@ -5,10 +5,16 @@ import os
 import pickle
 
 
-def plot_run(n, epsilon, delta, run_id=1):
-    run_directory = f"{os.getcwd()}/runs/{n}/{epsilon}_{delta}"
-    errors_directory = f"{os.getcwd()}/figures/{n}/{epsilon}_{delta}/errors"
-    upds_directory = f"{os.getcwd()}/figures/{n}/{epsilon}_{delta}/updates"
+def plot_run(n, epsilon, delta, concept="", run_id=1):
+    if concept !="":
+        run_root = concept + "_runs"
+        figure_root = concept + "_figures"
+    else:
+        run_root = "runs"
+        figure_root = "figures"
+    run_directory = f"{os.getcwd()}/{run_root}/{n}/{epsilon}_{delta}"
+    errors_directory = f"{os.getcwd()}/{figure_root}/{n}/{epsilon}_{delta}/errors"
+    upds_directory = f"{os.getcwd()}/{figure_root}/{n}/{epsilon}_{delta}/updates"
 
     if not os.path.exists(errors_directory):
         os.makedirs(errors_directory)
@@ -71,5 +77,9 @@ if __name__ == '__main__':
     epsilon = float(sys.argv[2])
     delta = float(sys.argv[3])
     run_id = int(sys.argv[4])
-
-    plot_run(n, epsilon, delta, run_id)
+    if len(sys.argv) == 6:
+        concept = sys.argv[5]
+    else:
+        concept = ""
+    
+    plot_run(n, epsilon, delta, concept, run_id)
