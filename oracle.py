@@ -19,7 +19,7 @@ class Oracle:
             - An object of the class Oracle with attributes:
                 * dim: the dimension of the input space
                 * params: the list of the angles applied to the roation gates to create the distribution
-                * logic: list the list of the controlled X gates corresponding to the target function
+                * logic: the list of the controlled X gates corresponding to the target function
                 * gate: the quantum gate corresponding to the oracle
                 * inv_gate: the inverse of gate
         """
@@ -32,7 +32,7 @@ class Oracle:
 
         self.dim = n
         self.params = params
-        self.logic = logic
+        self.logic = self.get_logic(logic)
 
         qc = QuantumCircuit(n+1)
         self.__apply_amplitude(qc, inverse=False)
@@ -44,6 +44,10 @@ class Oracle:
 
         self.gate = qc.to_gate(label="Oracle")
         self.inv_gate = qc_inv.to_gate(label="Oracle^-1")
+
+
+    def get_logic(self, logic):
+        return(logic)
 
 
     def __apply_amplitude(self, qc, inverse):
@@ -63,3 +67,23 @@ class Oracle:
                     if u[i] == "1":
                         controls.append(i)
                 qc.mcx(controls, self.dim)
+
+
+
+class Parity_Oracle(Oracle):
+
+    def get_logic(self, logic):
+        if len(logic) != 1:
+            raise ValueError("For parity function, one input must be provided")
+        log = []
+        for i in range(self.dim):
+            if logic[0][i] == "1":
+                u = ""
+                for j in range(self.dim):
+                    if i == j:
+                        u += "1"
+                    else:
+                        u += "0"
+                log.append(u)
+        return(log)
+
