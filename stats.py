@@ -14,7 +14,7 @@ from qiskit.providers.aer import QasmSimulator, StatevectorSimulator
 
 
 def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
-                step: int=2):
+                step: int=1):
     print("Start")
 
     params = util.get_parameters(n)
