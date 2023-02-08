@@ -1,6 +1,8 @@
 import numpy as np
 from qiskit import QuantumCircuit
 
+from utility import ones_to_str
+
 
 class TNN:
 
@@ -26,8 +28,7 @@ class TNN:
             raise ValueError(f"The length of gates is {len(gates)}, it should be {n}")
         self.gates = gates
 
-        state = QuantumCircuit(n+1)
-        self.network = state.to_gate(label="TNN")
+        self.generate_network()
 
 
     def __generate_gates(self):
@@ -65,7 +66,8 @@ class TNN:
         if "0"*self.dim in to_update:
             for k in self.gates:
                 self.gates[k] = 0
-        for g in to_update:
+        for s in to_update:
+            g = ones_to_str(s, self.dim)
             if g not in self.gates:
                 raise ValueError(f"{g} is not a gate")
             else:
