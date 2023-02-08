@@ -1,4 +1,5 @@
 import numpy as np
+import types
 
 from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
 from qiskit.providers.aer import QasmSimulator
@@ -7,12 +8,13 @@ from oracle import Oracle
 from tnn import TNN
 
 import utility as util
-import update_strategy as strat
+import qaa
+# import update_strategy as strat
 
 simulator = QasmSimulator()
 
 def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
-                cut: int=100, step: int= 1):
+                update_function: types.FunctionType, cut: int=100, step: int= 1):
     """
     Function performing the learning in the QPAC framework.
 
@@ -35,6 +37,7 @@ def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
     N = 2*(np.ceil(1/(np.pi*delta**2))//2)+2
     m_max = int(np.ceil(0.5*((np.pi/(4*np.arcsin(np.sqrt(epsilon/5)))) - 1)))
 
+    # Setting the schedule for the number of oracle iterations
     if step == 1:
         schedule = range(m_max+1)
     else:
@@ -52,8 +55,12 @@ def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
     s = 0
     n_update = 0
     m = 0
-    errors = []
+    measurements = {}
+    measurements['errors'] = [[] for k in range(n+1)]
+    measurements['corrects'] = [[] for k in range(n+1)]
+    measured = []
 
+    # Stops when m >= m_max and s <= N/2, that is when error less than epsilon
     while m < m_max or s > N/2:
         i += 1
         m = schedule[i]
@@ -61,7 +68,7 @@ def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
 
         tun_net.generate_network()
 
-        diffusion = util.get_diffusion_operator(ora, tun_net)
+        diffusion = qaa.get_diffusion_operator(ora, tun_net)
 
         # Creating the circuit
         qr = QuantumRegister(n, 'x')
@@ -88,22 +95,33 @@ def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
         job = simulator.run(compiled_circuit, shots=N)
         result = job.result()
         counts = result.get_counts(compiled_circuit)
+        # print(counts)
 
-        # Getting and counting the errors
-        # errors = []
+        # Getting the errors and corrects and counting the errors
         for sample in counts:
+            ones = util.str_to_ones(sample[3:][::-1])
+            l = len(ones)
             if sample[0:2] == "11":
                 s += counts[sample]
-                rev = sample[3:][::-1]
-                if rev not in errors:
-                    errors.append(rev)
+                if ones not in measured:
+                    measurements["errors"][l].append(ones)
+                    measured.append(ones)
+            if sample[0:2] == "00":
+                if ones not in measured:
+                    measurements["corrects"][l].append(ones)
+                    measured.append(ones)
 
+        # If s > N/2 the error is greater than epsilon so update circuit and start new cycle 
         if s > N/2:
-            to_update = strat.get_updates(tun_net, errors)
-            tun_net.update_tnn(to_update)
-            n_update += 1
+            to_update = update_function(measurements, network=tun_net, group=4)
+            if to_update != []:
+                tun_net.update_tnn(to_update)
+                n_update += 1
+                measurements = {}
+                measurements['errors'] = [[] for k in range(n+1)]
+                measurements['corrects'] = [[] for k in range(n+1)]
+                measured = []
             i = -1
-            errors = []
 
         if n_update==cut:
             return(-1)
