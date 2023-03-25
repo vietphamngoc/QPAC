@@ -5,19 +5,19 @@ import os
 import pickle
 
 
-def plot_figure(data, save_directory, metric, mode="run", **kwargs):
+def plot_figure(data, save_directory, metric, mode="run"):
     x, y = zip(*data.items())
 
     plt.figure(layout="tight")
 
     if metric == "errors":
-        plt.plot(x, [epsilon for i in x], c="r")
+        plt.plot([epsilon for i in x], c="r")
 
-    plt.scatter(x, y, c="g", marker="o")
+    if mode == "run":
+        plt.scatter(x, y, c="g", marker="o")
 
-    if mode == "mean":
-        xe, ye = zip(*kwargs['std'].items())
-        plt.errorbar(x, y, yerr=ye, ecolor="black", fmt="o", mfc="g", capsize=5)
+    else:
+        plt.violinplot(y, positions=range(len(x)))
 
     plt.xlabel("function")
 
@@ -26,21 +26,19 @@ def plot_figure(data, save_directory, metric, mode="run", **kwargs):
     else:
         plt.ylabel("number of updates")
 
-    plt.xticks(x, rotation=45, fontsize='small', ha='center')
+    plt.xticks(range(len(x)), labels=x, rotation=45, fontsize='small', ha='center')
 
     plt.savefig(save_directory)
 
 
-def stats(data_directory, metric):
+def collect(data_directory, metric):
     collection = {}
-    mean = {}
-    std = {}
     files = []
 
     for f in os.listdir(data_directory):
         if metric in f:
             files.append(f)
-
+    
     with open(f"{data_directory}/{files[0]}", "rb") as f:
         data = pickle.load(f)
     for k in data:
@@ -51,6 +49,13 @@ def stats(data_directory, metric):
             data = pickle.load(f)
         for k in data:
             collection[k].append(data[k])
+    
+    return(collection)
+
+def stats(data_directory, metric):
+    collection = collect(data_directory, metric)
+    mean = {}
+    std = {}
 
     for k in collection:
         mean[k] = np.mean(collection[k])
@@ -66,7 +71,7 @@ def get_data(data_directory, metric, mode, **kwargs):
             data = pickle.load(f)
         return(data)
     else:
-        return(stats(data_directory, metric))
+        return(collect(data_directory, metric))
     
 
 if __name__ == '__main__':
@@ -74,30 +79,24 @@ if __name__ == '__main__':
     n = sys.argv[2]
     epsilon = float(sys.argv[3])
     delta = float(sys.argv[4])
-    mode = sys.argv[5]
+    step = int(sys.argv[5])
+    mode = sys.argv[6]
     if mode not in ["run", "mean"]:
-        raise ValueError("5th argument must be either 'run' or 'mean'")
+        raise ValueError("6th argument must be either 'run' or 'mean'")
 
-    data_directory = f"{os.getcwd()}/{concept}_runs/{n}/{epsilon}_{delta}"
-    figure_directory = f"{os.getcwd()}/{concept}_figures/{n}/{epsilon}_{delta}"
+    data_directory = f"{os.getcwd()}/{concept}_runs/{n}/{epsilon}_{delta}_{step}"
+    figure_directory = f"{os.getcwd()}/{concept}_figures/{n}/{epsilon}_{delta}_{step}"
 
-
-    if mode == "run":
-        run_id = sys.argv[6]
-
-        for metric in ["errors", "updates"]:
+    for metric in ["errors", "updates"]:
+        save_directory = f"{figure_directory}/{metric}"
+        if not os.path.exists(save_directory):
+            os.makedirs(save_directory)
+        if mode == "run":
+            run_id = sys.argv[7]
             data = get_data(data_directory, metric, mode, run_id=run_id)
-            directory = f"{figure_directory}/{metric}"
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-            fig_file = f"{directory}/run_{run_id}.png"
-            plot_figure(data, fig_file, metric, mode)
+            fig_file = f"{save_directory}/run_{run_id}.png"
+        else:
+            data = get_data(data_directory, metric, mode)
+            fig_file = f"{save_directory}/mean.png"
+        plot_figure(data, fig_file, metric, mode)
 
-    else:
-        for metric in ["errors", "updates"]:
-            mean, std = get_data(data_directory, metric, mode)
-            directory = f"{figure_directory}/{metric}"
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-            fig_file = f"{directory}/mean.png"
-            plot_figure(mean, fig_file, metric, mode, std=std)
