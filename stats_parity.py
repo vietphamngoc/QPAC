@@ -18,7 +18,7 @@ def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
 
     U = util.get_functions(n, number)
 
-    run_directory = f"{os.getcwd()}/parity_runs/{n}/{epsilon}_{delta}"
+    run_directory = f"{os.getcwd()}/parity_runs/{n}/{epsilon}_{delta}_{step}"
 
     if not os.path.exists(run_directory):
         os.makedirs(run_directory)
@@ -51,16 +51,12 @@ def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
             key = f"{u}"
 
             if key not in errors or key not in ns_update:
-                print(f"Function: {key}")
                 ora = Parity_Oracle(n, [u], params=params)
                 tun_net = TNN(n)
 
                 n_update = qpac_learn(epsilon, delta, ora, tun_net, get_parity_updates, step=step)
 
                 ns_update[key] = n_update
-
-                active = [k for k,v in tun_net.gates.items() if v==1]
-                print(f"Final gates: {active}\n")
 
                 if n_update != -1:
                     err = get_error_rate(ora, tun_net)
@@ -78,14 +74,15 @@ if __name__ == '__main__':
     n = int(sys.argv[1])
     epsilon = float(sys.argv[2])
     delta = float(sys.argv[3])
-    run = int(sys.argv[4])
+    step = int(sys.argv[4])
+    run = int(sys.argv[5])
 
-    if len(sys.argv) == 5:
+    if len(sys.argv) == 6:
         number = 0
-    elif len(sys.argv) == 6:
-        number = int(sys.argv[5])
+    elif len(sys.argv) == 7:
+        number = int(sys.argv[6])
     else:
         raise ValueError("Invalid number of arguments")
 
 
-    get_stats(n, epsilon, delta, run, number=number, step=2)
+    get_stats(n, epsilon, delta, run, number=number, step=step)
