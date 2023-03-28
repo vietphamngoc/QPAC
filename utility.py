@@ -113,18 +113,19 @@ def get_functions(n: int, number: int=0):
     if os.path.exists(file):
         with open(file, "rb") as f:
             U = pickle.load(f)
-
     else:
-        U = []
+        all = []
+        for i in range(2**n):
+            all.append(np.binary_repr(i, n))
+
         if number == 0:
-            for i in range(2**n):
-                U.append(np.binary_repr(i, n))
+            U = all
         else:
+            U = []
             for i in range(number):
-                u = random.randint(0, 2**n-1)
-                while u in U:
-                    u = random.randint(0, 2**n-1)
-                U.append(np.binary_repr(u, n))
+                j = random.randint(0, len(all)-1)
+                U.append(all[j])
+                all.pop(j)
 
         with open(file, "wb") as f:
             pickle.dump(U, f)
