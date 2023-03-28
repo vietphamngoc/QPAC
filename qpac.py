@@ -95,7 +95,6 @@ def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
         job = simulator.run(compiled_circuit, shots=N)
         result = job.result()
         counts = result.get_counts(compiled_circuit)
-        # print(counts)
 
         # Getting the errors and corrects and counting the errors
         for sample in counts:

@@ -48,22 +48,19 @@ def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
                     pickle.dump(ns_update, f)
 
             u = U[i]
-            key = f"{u}"
 
-            if key not in errors or key not in ns_update:
+            if u not in errors or u not in ns_update:
                 ora = Parity_Oracle(n, [u], params=params)
                 tun_net = TNN(n)
 
                 n_update = qpac_learn(epsilon, delta, ora, tun_net, get_parity_updates, step=step)
 
-                ns_update[key] = n_update
+                ns_update[u] = n_update
 
-                if n_update != -1:
-                    err = get_error_rate(ora, tun_net)
-                    errors[key] = err
-                else:
-                    print(key)
-                    errors[key] = 0
+
+                err = get_error_rate(ora, tun_net)
+                errors[u] = err
+
         with open(error_file, "wb") as f:
             pickle.dump(errors, f)
         with open(upd_file, "wb") as f:
