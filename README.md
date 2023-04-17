@@ -6,6 +6,8 @@ It contains 2 classes:
 - Oracle in oracle.py which implements the query oracle.
 - TNN in tnn.py which implements the tunable neural network.
 
+The code is in the folder "code".
+
 The learning algorithm is implemented in qpac.py.
 
 The update strategy for the parity functions as well as another class of concepts have been implemented in u^date_strategy.py
