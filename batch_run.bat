@@ -7,9 +7,9 @@ for %%n in (%dim%) do (
     for %%e in (%epsilon%) do (
         for %%d in (%delta%) do (
             for %%s in (%step%) do (
-                python stats_parity.py %%n %%e %%d %%s 50 16
+                python code/analysis/stats_parity.py %%n %%e %%d %%s 50 16
 
-                python plot_figures.py parity %%n %%e %%d %%s mean
+                python code/analysis/plot_figures.py parity %%n %%e %%d %%s mean
             )
         )
     )
