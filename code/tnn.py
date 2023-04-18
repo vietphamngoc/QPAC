@@ -1,7 +1,8 @@
 import numpy as np
-from qiskit import QuantumCircuit
 
-from utility import ones_to_str
+import utility as util
+
+from qiskit import QuantumCircuit
 
 
 class TNN:
@@ -67,7 +68,7 @@ class TNN:
             for k in self.gates:
                 self.gates[k] = 0
         for s in to_update:
-            g = ones_to_str(s, self.dim)
+            g = util.ones_to_str(s, self.dim)
             if g not in self.gates:
                 raise ValueError(f"{g} is not a gate")
             else:

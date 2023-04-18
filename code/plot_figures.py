@@ -83,9 +83,11 @@ if __name__ == '__main__':
     mode = sys.argv[6]
     if mode not in ["run", "mean"]:
         raise ValueError("6th argument must be either 'run' or 'mean'")
+    
+    os.chdir("../")
 
-    data_directory = f"{os.getcwd()}/{concept}_runs/{n}/{epsilon}_{delta}_{step}"
-    figure_directory = f"{os.getcwd()}/{concept}_figures/{n}/{epsilon}_{delta}_{step}"
+    data_directory = f"{os.getcwd()}/results/{concept}/runs/{n}/{epsilon}_{delta}_{step}"
+    figure_directory = f"{os.getcwd()}/results/{concept}/figures/{n}/{epsilon}_{delta}_{step}"
 
     for metric in ["errors", "updates"]:
         save_directory = f"{figure_directory}/{metric}"

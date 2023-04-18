@@ -1,15 +1,15 @@
 import numpy as np
 import types
 
+import utility as util
+import qaa
+
 from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
 from qiskit.providers.aer import QasmSimulator
 
 from oracle import Oracle
 from tnn import TNN
 
-import utility as util
-import qaa
-# import update_strategy as strat
 
 simulator = QasmSimulator()
 

@@ -2,23 +2,30 @@ import sys
 import os
 import pickle
 
+import utility as util
+
 from oracle import Parity_Oracle
 from tnn import TNN
 from qpac import qpac_learn
 from update_strategy import get_parity_updates
 from error_rate import get_error_rate
-import utility as util
 
 
 def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
                 step: int=1):
     print("Start")
 
+    os.chdir("../")
+    directory = f"{os.getcwd()}/results/parity"
+    if not os.path.isdir(directory):
+        os.makedirs(directory)
+    os.chdir(directory)
+
     params = util.get_parameters(n)
 
     U = util.get_functions(n, number)
 
-    run_directory = f"{os.getcwd()}/parity_runs/{n}/{epsilon}_{delta}_{step}"
+    run_directory = f"{os.getcwd()}/runs/{n}/{epsilon}_{delta}_{step}"
 
     if not os.path.exists(run_directory):
         os.makedirs(run_directory)

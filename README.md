@@ -10,7 +10,7 @@ The code is in the folder "code".
 
 The learning algorithm is implemented in qpac.py.
 
-The update strategy for the parity functions as well as another class of concepts have been implemented in u^date_strategy.py
+The update strategy for the parity functions as well as another class of concepts have been implemented in update_strategy.py
 
 qaa.py contains the quantum amplitude amplification algorithm, it takes as input the oracle and the TNN.
 

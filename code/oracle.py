@@ -3,6 +3,7 @@ import random
 
 from qiskit import QuantumCircuit
 
+
 class Oracle:
 
     def __init__(self, n: int, logic: list, params: list=[]):

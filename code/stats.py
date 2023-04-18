@@ -5,12 +5,13 @@ import sys
 import os
 import pickle
 
-from oracle import Oracle
-from tnn import TNN
 import utility as util
-from qpac import qpac_learn
 
 from qiskit.providers.aer import QasmSimulator, StatevectorSimulator
+
+from oracle import Oracle
+from tnn import TNN
+from qpac import qpac_learn
 
 
 def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
