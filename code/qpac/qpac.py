@@ -1,14 +1,14 @@
 import numpy as np
 import types
 
-import utility as util
-import qaa
+import utilities.utility as util
+import circuits.qaa as qaa
 
 from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
 from qiskit.providers.aer import QasmSimulator
 
-from oracle import Oracle
-from tnn import TNN
+from circuits.oracle import Oracle
+from circuits.tnn import TNN
 
 
 simulator = QasmSimulator()

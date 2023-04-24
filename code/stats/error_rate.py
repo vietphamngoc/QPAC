@@ -1,8 +1,8 @@
 from qiskit import QuantumCircuit, transpile
 from qiskit.providers.aer import StatevectorSimulator
 
-from oracle import Oracle
-from tnn import TNN
+from circuits.oracle import Oracle
+from circuits.tnn import TNN
 
 
 def get_error_rate(ora: Oracle, tun_net: TNN)->float:

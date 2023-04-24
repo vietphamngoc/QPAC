@@ -1,4 +1,4 @@
-import utility as util
+import utilities.utility as util
 
 def get_updates(measurements: dict, **kwargs)->list:
     """
