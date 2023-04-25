@@ -3,21 +3,18 @@ This project is an implementation of tunable neural network in the QPAC-learning
 The version of Qiskit used in this project is 0.34.2
 
 It contains 2 classes:
-- Oracle in oracle.py which implements the query oracle.
-- TNN in tnn.py which implements the tunable neural network.
+- Oracle in circuits/oracle.py which implements the query oracle.
+- TNN in circuits/tnn.py which implements the tunable neural network.
 
-The code is in the folder "code".
+The learning algorithm is implemented in qpac/qpac.py.
 
-The learning algorithm is implemented in qpac.py.
+The update strategy for the parity functions as well as another class of concepts have been implemented in qpac/update_strategy.py
 
-The update strategy for the parity functions as well as another class of concepts have been implemented in update_strategy.py
+circuits/qaa.py contains the quantum amplitude amplification algorithm, it takes as input the oracle and the TNN.
 
-qaa.py contains the quantum amplitude amplification algorithm, it takes as input the oracle and the TNN.
+run_stats.py will run multiple experiments to train the TNN on the same set of randomly selected function of the class for different epsilon, delta and step size.
 
-stats_parity.py will run multiple experiments to train the TNN on the same set of randomly selected function of the class for different epsilon, delta and step size.
+run_figures.py will plot either the result of one of these experiment or the distribution of the results when one experiment is repeated.
 
-plot_figures.py will plot either the result of one of these experiment or the distribution of the results when one experiment is repeated.
-
-batch_run.bat contains examples of how to run these 2 last scripts.
 
 
