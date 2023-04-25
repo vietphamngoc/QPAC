@@ -36,7 +36,7 @@ class TNN:
         gates = {}
         for i in range(2**(self.dim)):
             gates[np.binary_repr(i,self.dim)] = 0
-        return(gates)
+        return gates
 
 
     def generate_network(self):

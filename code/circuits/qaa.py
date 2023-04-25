@@ -3,8 +3,8 @@ import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.quantum_info.operators import Operator
 
-from oracle import Oracle
-from tnn import TNN
+from circuits.oracle import Oracle
+from circuits.tnn import TNN
 
 
 def get_diffusion_operator(ora: Oracle, tun_net: TNN):
@@ -35,4 +35,4 @@ def get_diffusion_operator(ora: Oracle, tun_net: TNN):
     qc.append(ora.gate, range(n+1))
     qc.append(tun_net.network, range(n+1))
     qc.cry(2*np.arcsin(1/np.sqrt(5)), n, n+1)
-    return(qc.to_gate(label="Diffusion"))
+    return qc.to_gate(label="Diffusion")

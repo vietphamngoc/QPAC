@@ -18,7 +18,7 @@ def ones_to_str(ones: set, n: int)->str:
     binary = ["0" for i in range(n)]
     for i in ones:
         binary[i] = "1"
-    return("".join(binary))
+    return "".join(binary)
 
 
 def str_to_ones(string: str)->set:
@@ -32,7 +32,7 @@ def str_to_ones(string: str)->set:
         The set collecting the positions of the '1's in string
     """
     ones = [i for i in range(len(string)) if string[i] == "1"]
-    return(set(ones))
+    return set(ones)
 
 
 def get_custom_params(n: int, u: str, angle: float)->list:
@@ -55,7 +55,7 @@ def get_custom_params(n: int, u: str, angle: float)->list:
             params.append(angle)
         else:
             params.append(np.pi/2)
-    return(params)
+    return params
 
 
 def get_parameters(n: int):
@@ -86,7 +86,7 @@ def get_parameters(n: int):
         with open(file, "wb") as f:
             pickle.dump(params, f)
 
-    return(params)
+    return params
 
 
 def get_functions(n: int, number: int=0):
@@ -130,4 +130,4 @@ def get_functions(n: int, number: int=0):
         with open(file, "wb") as f:
             pickle.dump(U, f)
 
-    return(U)
+    return U

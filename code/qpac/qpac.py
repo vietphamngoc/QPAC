@@ -123,5 +123,5 @@ def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
             i = -1
 
         if n_update==cut:
-            return(-1)
-    return(n_update)
+            return -1
+    return n_update

@@ -33,7 +33,7 @@ def get_updates(measurements: dict, **kwargs)->list:
                     intersections.append(s)
             return(intersections)
         else:
-            return([])
+            return []
     
     errors_inter = get_intersections(measurements['errors'])
     corrects_inter = get_intersections(measurements['corrects'])
@@ -60,7 +60,7 @@ def get_updates(measurements: dict, **kwargs)->list:
     if add_0:    
         to_update.append(set())
     
-    return(to_update)
+    return to_update
     
 
 def get_parity_updates(measurements: dict, **kwargs)->list:
@@ -79,7 +79,7 @@ def get_parity_updates(measurements: dict, **kwargs)->list:
         compare_and_update(measurements['errors'][i], measurements['corrects'][i+1])
         compare_and_update(measurements['corrects'][i], measurements['errors'][i+1])
     
-    return(to_update)
+    return to_update
 
     
 

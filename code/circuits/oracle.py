@@ -48,7 +48,7 @@ class Oracle:
 
 
     def get_logic(self, logic):
-        return(logic)
+        return logic
 
 
     def __apply_amplitude(self, qc, inverse):
@@ -86,5 +86,5 @@ class Parity_Oracle(Oracle):
                     else:
                         u += "0"
                 log.append(u)
-        return(log)
+        return log
 

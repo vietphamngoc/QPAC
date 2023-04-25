@@ -30,4 +30,4 @@ def get_error_rate(ora: Oracle, tun_net: TNN)->float:
     for s in counts:
         if s[0] == "1":
             rate += counts[s]
-    return(rate)
+    return rate

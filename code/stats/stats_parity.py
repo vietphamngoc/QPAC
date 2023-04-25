@@ -2,20 +2,19 @@ import sys
 import os
 import pickle
 
-import utility as util
+import utilities.utility as util
 
-from oracle import Parity_Oracle
-from tnn import TNN
-from qpac import qpac_learn
-from update_strategy import get_parity_updates
-from error_rate import get_error_rate
+from circuits.oracle import Parity_Oracle
+from circuits.tnn import TNN
+from qpac.qpac import qpac_learn
+from qpac.update_strategy import get_parity_updates
+from stats.error_rate import get_error_rate
 
 
 def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
                 step: int=1):
     print("Start")
 
-    os.chdir("../")
     directory = f"{os.getcwd()}/results/parity"
     if not os.path.isdir(directory):
         os.makedirs(directory)
