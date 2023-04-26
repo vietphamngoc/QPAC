@@ -112,7 +112,7 @@ def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
 
         # If s > N/2 the error is greater than epsilon so update circuit and start new cycle 
         if s > N/2:
-            to_update = update_function(measurements, network=tun_net, group=4)
+            to_update = update_function(measurements, network=tun_net)
             if to_update != []:
                 tun_net.update_tnn(to_update)
                 n_update += 1
