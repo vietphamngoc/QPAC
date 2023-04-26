@@ -17,6 +17,7 @@ if __name__ == '__main__':
     else:
         raise ValueError("Invalid number of arguments")
     
+    os.chdir(os.path.dirname(sys.argv[0]))
     os.chdir("../")
     
     get_stats(n, epsilon, delta, run, number=number, step=step)
