@@ -1,4 +1,3 @@
-import sys
 import os
 import pickle
 
@@ -11,7 +10,16 @@ from qpac.qpac import qpac_learn
 
 def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
                 step: int=1):
-    print("Start")
+    
+    script_directory = os.path.dirname(__file__)
+    os.chdir(script_directory)
+    os.chdir("../..")
+    directory = f"{os.getcwd()}/results"
+    if not os.path.isdir(directory):
+        os.makedirs(directory)
+    os.chdir(directory)
+
+    print(f"Saving results to: {os.getcwd()}")
 
     params = util.get_parameters(n)
 

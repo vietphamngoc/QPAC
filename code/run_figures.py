@@ -13,7 +13,8 @@ if __name__ == '__main__':
     if mode not in ["run", "all"]:
         raise ValueError("6th argument must be either 'run' or 'all'")
     
-    os.chdir(os.path.dirname(sys.argv[0]))
+    script_directory = os.path.dirname(__file__)
+    os.chdir(script_directory)
     os.chdir("../")
 
     data_directory = f"{os.getcwd()}/results/{concept}/runs/{n}/{epsilon}_{delta}_{step}"

@@ -1,4 +1,3 @@
-import sys
 import os
 import pickle
 
@@ -13,12 +12,16 @@ from stats.error_rate import get_error_rate
 
 def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
                 step: int=1):
-    print("Start")
 
-    directory = f"{os.getcwd()}/results/parity"
+    script_directory = os.path.dirname(__file__)
+    os.chdir(script_directory)
+    os.chdir("../..")
+    directory = f"{os.getcwd()}/results"
     if not os.path.isdir(directory):
         os.makedirs(directory)
     os.chdir(directory)
+
+    print(f"Saving results to: {os.getcwd()}")
 
     params = util.get_parameters(n)
 
@@ -71,21 +74,3 @@ def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
             pickle.dump(errors, f)
         with open(upd_file, "wb") as f:
             pickle.dump(ns_update, f)
-
-
-if __name__ == '__main__':
-    n = int(sys.argv[1])
-    epsilon = float(sys.argv[2])
-    delta = float(sys.argv[3])
-    step = int(sys.argv[4])
-    run = int(sys.argv[5])
-
-    if len(sys.argv) == 6:
-        number = 0
-    elif len(sys.argv) == 7:
-        number = int(sys.argv[6])
-    else:
-        raise ValueError("Invalid number of arguments")
-
-
-    get_stats(n, epsilon, delta, run, number=number, step=step)
