@@ -16,7 +16,7 @@ def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,
     script_directory = os.path.dirname(__file__)
     os.chdir(script_directory)
     os.chdir("../..")
-    directory = f"{os.getcwd()}/results"
+    directory = f"{os.getcwd()}/results/parity"
     if not os.path.isdir(directory):
         os.makedirs(directory)
     os.chdir(directory)

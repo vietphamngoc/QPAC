@@ -14,7 +14,6 @@ circuits/qaa.py contains the quantum amplitude amplification algorithm, it takes
 
 run_stats.py will run multiple experiments to train the TNN on the same set of randomly selected function of the class for different epsilon, delta and step size.
 
-run_figures.py will plot either the result of one of these experiment or the distribution of the results when one experiment is repeated.
 
 
 
