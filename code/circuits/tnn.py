@@ -1,6 +1,6 @@
 import numpy as np
 
-import utilities.utility as util
+import code.utilities.utility as util
 
 from qiskit import QuantumCircuit
 

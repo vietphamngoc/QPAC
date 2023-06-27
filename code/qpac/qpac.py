@@ -1,14 +1,14 @@
 import numpy as np
 import types
 
-import utilities.utility as util
-import circuits.qaa as qaa
+import code.utilities.utility as util
+import code.circuits.qaa as qaa
 
 from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
 from qiskit.providers.aer import QasmSimulator
 
-from circuits.oracle import Oracle
-from circuits.tnn import TNN
+from code.circuits.oracle import Oracle
+from code.circuits.tnn import TNN
 
 
 simulator = QasmSimulator()
@@ -100,12 +100,13 @@ def qpac_learn( epsilon: float, delta: float, ora: Oracle, tun_net: TNN,
         for sample in counts:
             ones = util.str_to_ones(sample[3:][::-1])
             l = len(ones)
-            if sample[0:2] == "11":
-                s += counts[sample]
+            if sample[1] == "1":
+                if sample[0] == "1":
+                    s += counts[sample]
                 if ones not in measured:
                     measurements["errors"][l].append(ones)
                     measured.append(ones)
-            if sample[0:2] == "00":
+            if sample[1] == "0":
                 if ones not in measured:
                     measurements["corrects"][l].append(ones)
                     measured.append(ones)

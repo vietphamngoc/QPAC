@@ -1,11 +1,11 @@
 import os
 import pickle
 
-import utilities.utility as util
+import code.utilities.utility as util
 
-from circuits.oracle import Oracle
-from circuits.tnn import TNN
-from qpac.qpac import qpac_learn
+from code.circuits.oracle import Oracle
+from code.circuits.tnn import TNN
+from code.qpac.qpac import qpac_learn
 
 
 def get_stats(  n: int, epsilon: float, delta: float, runs: int, number: int=0,

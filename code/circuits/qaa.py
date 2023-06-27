@@ -3,8 +3,8 @@ import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.quantum_info.operators import Operator
 
-from circuits.oracle import Oracle
-from circuits.tnn import TNN
+from code.circuits.oracle import Oracle
+from code.circuits.tnn import TNN
 
 
 def get_diffusion_operator(ora: Oracle, tun_net: TNN):
