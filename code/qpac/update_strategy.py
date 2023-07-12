@@ -61,24 +61,83 @@ def get_updates(measurements: dict, **kwargs)->list:
         to_update.append(set())
     
     return to_update
-    
 
-def get_parity_updates(measurements: dict, **kwargs)->list:
-    l = len(measurements['errors'])
-    to_update = measurements['errors'][1]
 
-    def compare_and_update(l1, l2):
+def remove_and_update(bit: set, l1: list, l2: list, significant = True):
+    if significant:
+        l = l2
+    else:
+        l = l1
+
+    for w in range(1,len(l1)):
+        changed = []
+        for s in l1[w]:
+            if bit <= s:
+                changed.append(s)
+
+        for s in changed:
+            l1[w].remove(s)
+            c = s-bit
+            if c not in l[w-1]:
+                l[w-1].append(c)
+
+
+def compare_and_add(l1, l2, new):
         for a in l1:
             for b in l2:
                 if a < b:
                     c = b - a
-                    if c not in to_update:
-                        to_update.append(c)
+                    if c not in new:
+                        new.append(c)
 
-    for i in range(1, l-1):
-        compare_and_update(measurements['errors'][i], measurements['corrects'][i+1])
-        compare_and_update(measurements['corrects'][i], measurements['errors'][i+1])
     
+def get_parity_updates(measurements: dict, **kwargs)->list:
+    n = len(measurements['errors'])-1
+    to_update = measurements['errors'][1].copy()
+    
+    new_significant = measurements['errors'][1].copy()
+
+    stop = False
+
+    for significant in new_significant:
+        remove_and_update(significant, measurements['errors'], measurements['corrects'], True)
+        remove_and_update(significant, measurements['corrects'], measurements['errors'], True)
+
+    not_significant = measurements['corrects'][1].copy()
+
+    for n_s in not_significant:
+        remove_and_update(n_s, measurements['errors'], measurements['corrects'], False)
+        remove_and_update(n_s, measurements['corrects'], measurements['errors'], False)
+
+    while not stop:
+        new_significant = measurements['errors'][1].copy()
+
+        if new_significant == []:
+            for i in range(1, n):
+                compare_and_add(measurements['errors'][i], measurements['corrects'][i+1], new_significant)
+                if new_significant != []:
+                    break
+
+                compare_and_add(measurements['corrects'][i], measurements['errors'][i+1], new_significant)
+                if new_significant != []:
+                    break
+
+        if new_significant != []:
+            to_update += new_significant
+
+            for significant in new_significant:
+                remove_and_update(significant, measurements['errors'], measurements['corrects'], True)
+                remove_and_update(significant, measurements['corrects'], measurements['errors'], True)
+
+        else:
+            stop = True
+
+        not_significant = measurements['corrects'][1].copy() 
+
+        for n_s in not_significant:
+            remove_and_update(n_s, measurements['errors'], measurements['corrects'], False)
+            remove_and_update(n_s, measurements['corrects'], measurements['errors'], False)
+                
     return to_update
 
     
