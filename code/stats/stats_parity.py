@@ -81,8 +81,8 @@ def get_stats(n: int, epsilon: float, delta: float, runs: int, number: int=0, st
         one_run(n, epsilon, delta, step, fcts, params, run_directory, j)
 
 
-def get_parallel_stats(n: int, epsilon: float, delta: float, runs: int, number: int=0, step: int=2, n_jobs: int=5):
+def get_parallel_stats(n: int, epsilon: float, delta: float, runs: list, number: int=0, step: int=2, n_jobs: int=5):
     fcts, params, run_directory = get_settings(n, number, epsilon, delta, step)
 
-    Parallel(n_jobs=n_jobs)(delayed(one_run)(n, epsilon, delta, step, fcts, params, run_directory, j) for j in range(runs))
+    Parallel(n_jobs=n_jobs)(delayed(one_run)(n, epsilon, delta, step, fcts, params, run_directory, j) for j in runs)
 
