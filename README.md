@@ -3,7 +3,7 @@ This project is an implementation of tunable neural network in the QPAC-learning
 The version of Qiskit used in this project is 0.34.2
 
 It contains 2 classes:
-- Oracle in circuits/oracle.py which implements the query oracle.
+- Oracle in circuits/oracle.py which implements the query oracle. Oracle has a subclass Parity_Oracle. The difference between the two is that for Parity_Oracle, the logic argument is a list of length 1, with the element of logic marking the significant bits of the function.
 - TNN in circuits/tnn.py which implements the tunable neural network.
 
 The learning algorithm is implemented in qpac/qpac.py.
